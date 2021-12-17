@@ -9,6 +9,7 @@ import torch.nn.functional as F
 
 
 class STN3d(nn.Module):
+    """T-Net, Input Transformer, 生成 3x3 的转换矩阵"""
     def __init__(self):
         super(STN3d, self).__init__()
         self.conv1 = torch.nn.Conv1d(3, 64, 1)
@@ -47,6 +48,7 @@ class STN3d(nn.Module):
 
 
 class STNkd(nn.Module):
+    """T-Net, Feature Transformer, 生成 64x64 的转换矩阵"""
     def __init__(self, k=64):
         super(STNkd, self).__init__()
         self.conv1 = torch.nn.Conv1d(k, 64, 1)
@@ -85,6 +87,7 @@ class STNkd(nn.Module):
         return x
 
 class PointNetfeat(nn.Module):
+    """特征生成网络：global_feat：只生成全局特征用于分类；还是生成局部特征+全局特征进行拼接，用于分割 """
     def __init__(self, global_feat = True, feature_transform = False):
         super(PointNetfeat, self).__init__()
         self.stn = STN3d()
@@ -103,7 +106,8 @@ class PointNetfeat(nn.Module):
         n_pts = x.size()[2]
         trans = self.stn(x)
         x = x.transpose(2, 1)
-        x = torch.bmm(x, trans)
+        # torch.bmm(a,b):计算两个张量的矩阵乘法，a.size=(b,h,w),b.size=(b,w,h),两个张量的维度必须为3
+        x = torch.bmm(x, trans) 
         x = x.transpose(2, 1)
         x = F.relu(self.bn1(self.conv1(x)))
 
@@ -127,6 +131,7 @@ class PointNetfeat(nn.Module):
             return torch.cat([x, pointfeat], 1), trans, trans_feat
 
 class PointNetCls(nn.Module):
+    """PointNet 分类器网络"""
     def __init__(self, k=2, feature_transform=False):
         super(PointNetCls, self).__init__()
         self.feature_transform = feature_transform
@@ -148,6 +153,7 @@ class PointNetCls(nn.Module):
 
 
 class PointNetDenseCls(nn.Module):
+    """PointNet 分割器网络"""
     def __init__(self, k = 2, feature_transform=False):
         super(PointNetDenseCls, self).__init__()
         self.k = k
@@ -184,20 +190,26 @@ def feature_transform_regularizer(trans):
     return loss
 
 if __name__ == '__main__':
+    # 批处理的大小：32条数据；3个特征；每条数据的数据点个数：2500个点
     sim_data = Variable(torch.rand(32,3,2500))
     trans = STN3d()
     out = trans(sim_data)
+    print("sim_data", sim_data.size())
+    print(trans)
     print('stn', out.size())
     print('loss', feature_transform_regularizer(out))
 
     sim_data_64d = Variable(torch.rand(32, 64, 2500))
     trans = STNkd(k=64)
     out = trans(sim_data_64d)
+    print('sim_data_64d', sim_data_64d.size())
+    print(trans)
     print('stn64d', out.size())
     print('loss', feature_transform_regularizer(out))
 
     pointfeat = PointNetfeat(global_feat=True)
     out, _, _ = pointfeat(sim_data)
+    print(pointfeat)
     print('global feat', out.size())
 
     pointfeat = PointNetfeat(global_feat=False)
