@@ -73,7 +73,8 @@ class ShapeNetDataset(data.Dataset):
             for line in f:
                 ls = line.strip().split()
                 self.cat[ls[0]] = ls[1]
-        #print(self.cat)
+        # print("-->类型列表<--")
+        # print(self.cat)
         if not class_choice is None:
             self.cat = {k: v for k, v in self.cat.items() if k in class_choice}
 
@@ -98,13 +99,15 @@ class ShapeNetDataset(data.Dataset):
                 self.datapath.append((item, fn[0], fn[1]))
 
         self.classes = dict(zip(sorted(self.cat), range(len(self.cat))))
-        print(self.classes)
+        # print("-->类型列表，每个类型的数目<--")
+        # print(self.classes)
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../misc/num_seg_classes.txt'), 'r') as f:
             for line in f:
                 ls = line.strip().split()
                 self.seg_classes[ls[0]] = int(ls[1])
         self.num_seg_classes = self.seg_classes[list(self.cat.keys())[0]]
-        print(self.seg_classes, self.num_seg_classes)
+        # print("-->分割类型,每个类型的数目<--")
+        # print(self.seg_classes, self.num_seg_classes)
 
     def __getitem__(self, index):
         fn = self.datapath[index]
@@ -197,14 +200,15 @@ if __name__ == '__main__':
 
     if dataset == 'shapenet':
         d = ShapeNetDataset(root = datapath, class_choice = ['Chair'])
-        print(len(d))
+        print("class_choice=Chair,len(d)=",len(d))
         ps, seg = d[0]
-        print(ps.size(), ps.type(), seg.size(),seg.type())
+        print("ps.size()=", ps.size(),"ps.type()=", ps.type(), "seg.size()=", seg.size(),"seg.type()=",seg.type())
 
         d = ShapeNetDataset(root = datapath, classification = True)
-        print(len(d))
+        print("classification=True,len(d)=",len(d))
         ps, cls = d[0]
-        print(ps.size(), ps.type(), cls.size(),cls.type())
+        print("ps.size()=", ps.size(),"ps.type()=", ps.type(), "seg.size()=", seg.size(),"seg.type()=",seg.type())
+        # print(ps.size(), ps.type(), cls.size(),cls.type())
         # get_segmentation_classes(datapath)
 
     if dataset == 'modelnet':
