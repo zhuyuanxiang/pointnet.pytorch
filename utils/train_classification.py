@@ -13,14 +13,10 @@ from tqdm import tqdm
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--batchSize', type=int, default=32, help='input batch size')
-parser.add_argument(
-    '--num_points', type=int, default=2500, help='input batch size')
-parser.add_argument(
-    '--workers', type=int, help='number of data loading workers', default=4)
-parser.add_argument(
-    '--nepoch', type=int, default=250, help='number of epochs to train for')
+parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
+parser.add_argument('--num_points', type=int, default=2500, help='input points number')
+parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
+parser.add_argument('--nepoch', type=int, default=250, help='number of epochs to train for')
 parser.add_argument('--outf', type=str, default='cls', help='output folder')
 parser.add_argument('--model', type=str, default='', help='model path')
 parser.add_argument('--dataset', type=str, required=True, help="dataset path")
@@ -76,9 +72,9 @@ testdataloader = torch.utils.data.DataLoader(
         shuffle=True,
         num_workers=int(opt.workers))
 
-print(len(dataset), len(test_dataset))
+print("len(dataset)=",len(dataset), "len(test_dataset)=",len(test_dataset))
 num_classes = len(dataset.classes)
-print('classes', num_classes)
+print('classes=', num_classes)
 
 try:
     os.makedirs(opt.outf)
