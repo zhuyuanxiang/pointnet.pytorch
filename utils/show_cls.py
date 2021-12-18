@@ -13,7 +13,8 @@ import torch.nn.functional as F
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--model', type=str, default = '',  help='model path')
+parser.add_argument('--batchSize', type=int, default=24, help='input batch size')
+parser.add_argument('--model', type=str, default = './cls/cls_model_4.pth',  help='model path')
 parser.add_argument('--num_points', type=int, default=2500, help='input batch size')
 
 
@@ -21,14 +22,14 @@ opt = parser.parse_args()
 print(opt)
 
 test_dataset = ShapeNetDataset(
-    root='shapenetcore_partanno_segmentation_benchmark_v0',
+    root='./datasets/shapenets/',
     split='test',
     classification=True,
     npoints=opt.num_points,
     data_augmentation=False)
 
 testdataloader = torch.utils.data.DataLoader(
-    test_dataset, batch_size=32, shuffle=True)
+    test_dataset, batch_size=opt.batchSize, shuffle=True)
 
 classifier = PointNetCls(k=len(test_dataset.classes))
 classifier.cuda()
@@ -46,4 +47,4 @@ for i, data in enumerate(testdataloader, 0):
 
     pred_choice = pred.data.max(1)[1]
     correct = pred_choice.eq(target.data).cpu().sum()
-    print('i:%d  loss: %f accuracy: %f' % (i, loss.data.item(), correct / float(32)))
+    print('i:%d  loss: %f accuracy: %f' % (i, loss.data.item(), correct / float(opt.batchSize)))
