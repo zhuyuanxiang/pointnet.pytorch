@@ -86,10 +86,10 @@ class STNkd(nn.Module):
         x = x.view(-1, self.k, self.k)
         return x
 
-class PointNetfeat(nn.Module):
+class PointNetFeat(nn.Module):
     """特征生成网络：global_feat：只生成全局特征用于分类；还是生成局部特征+全局特征进行拼接，用于分割 """
     def __init__(self, global_feat = True, feature_transform = False):
-        super(PointNetfeat, self).__init__()
+        super(PointNetFeat, self).__init__()
         self.stn = STN3d()
         self.conv1 = torch.nn.Conv1d(3, 64, 1)
         self.conv2 = torch.nn.Conv1d(64, 128, 1)
@@ -135,7 +135,7 @@ class PointNetCls(nn.Module):
     def __init__(self, k=2, feature_transform=False):
         super(PointNetCls, self).__init__()
         self.feature_transform = feature_transform
-        self.feat = PointNetfeat(global_feat=True, feature_transform=feature_transform)
+        self.feat = PointNetFeat(global_feat=True, feature_transform=feature_transform)
         self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, k)
@@ -158,7 +158,7 @@ class PointNetDenseCls(nn.Module):
         super(PointNetDenseCls, self).__init__()
         self.k = k
         self.feature_transform=feature_transform
-        self.feat = PointNetfeat(global_feat=False, feature_transform=feature_transform)
+        self.feat = PointNetFeat(global_feat=False, feature_transform=feature_transform)
         self.conv1 = torch.nn.Conv1d(1088, 512, 1)
         self.conv2 = torch.nn.Conv1d(512, 256, 1)
         self.conv3 = torch.nn.Conv1d(256, 128, 1)
@@ -207,12 +207,12 @@ if __name__ == '__main__':
     print('stn64d', out.size())
     print('loss', feature_transform_regularizer(out))
 
-    pointfeat = PointNetfeat(global_feat=True)
+    pointfeat = PointNetFeat(global_feat=True)
     out, _, _ = pointfeat(sim_data)
     print(pointfeat)
     print('global feat', out.size())
 
-    pointfeat = PointNetfeat(global_feat=False)
+    pointfeat = PointNetFeat(global_feat=False)
     out, _, _ = pointfeat(sim_data)
     print('point feat', out.size())
 
