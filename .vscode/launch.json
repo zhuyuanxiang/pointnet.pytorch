@@ -5,40 +5,47 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "args": [
-                "--shapenet",
-                "./datasets/shapenets/"
-            ],
-            "name": "test dataset",
-            "type": "python",
-            "request": "launch",
-            "program": "pointnet/dataset.py",
-            "console": "integratedTerminal"
-        },
-        {
-            "args": [
-                "--batchSize",
-                "128",
-                "--nepoch",
-                "5",
-                "--workers",
-                "8",
-                "--dataset",
-                "./datasets/shapenets/"
-            ],
+            "name":"show model",
             "envFile": "${workspaceFolder}/.vscode/train.env",
-            "name": "train model",
-            "type": "python",
-            "request": "launch",
-            "program": "utils/train_classification.py",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: 当前文件",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        }
-    ]
-}
+            "type":"python",
+            "request":"launch",
+            "program":"utils/show_seg.py",
+            "console":"integratedTerminal"}, 
+            {
+                "name": "train model",
+                "args": [
+                    "--batchSize",
+                    "128",
+                    "--nepoch",
+                    "5",
+                    "--workers",
+                    "8",
+                    "--dataset",
+                    "./datasets/shapenets/"
+                ],
+                "envFile": "${workspaceFolder}/.vscode/train.env",
+                "type": "python",
+                "request": "launch",
+                "program": "utils/train_classification.py",
+                "console": "integratedTerminal"
+            },
+            {
+                "name": "test dataset",
+                "args": [
+                    "shapenet",
+                    "./datasets/shapenets/"
+                ],
+                "type": "python",
+                "request": "launch",
+                "program": "pointnet/dataset.py",
+                "console": "integratedTerminal"
+            },
+            {
+                "name": "Python: 当前文件",
+                "type": "python",
+                "request": "launch",
+                "program": "${file}",
+                "console": "integratedTerminal"
+            }
+        ]
+    }
