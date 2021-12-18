@@ -1,55 +1,73 @@
 # PointNet.pytorch
-This repo is implementation for PointNet(https://arxiv.org/abs/1612.00593) in pytorch. The model is in `pointnet/model.py`.
 
-It is tested with pytorch-1.0.
+这个仓库 PointNet(https://arxiv.org/abs/1612.00593) 基于 pytorch 的实现，模型在 `pointnet/model.py` 中.
 
-# Download data and running
+基于 pytorch-1.0 进行了测试。
 
-```
+# 数据下载与运行
+
+```shell
 git clone https://github.com/fxia22/pointnet.pytorch
 cd pointnet.pytorch
 pip install -e .
 ```
 
-Download and build visualization tool
-```
+下载和编译可视化工具
+```shell
 cd script
 bash build.sh #build C++ code for visualization
 bash download.sh #download dataset
 ```
 
-Training 
-```
+训练模型
+
+```shell
 cd utils
 python train_classification.py --dataset <dataset path> --nepoch=<number epochs> --dataset_type <modelnet40 | shapenet>
 python train_segmentation.py --dataset <dataset path> --nepoch=<number epochs> 
 ```
 
-Use `--feature_transform` to use feature transform.
+配置 `--feature_transform` 使用特征变换。
 
-# Performance
+# 文件说明
 
-## Classification performance
+- `pointnet/dataset.py`
+  - `ShapeNetDataset`：ShapeNet 数据集类
+  - `ModelNetDataset`：ModelNet 数据集类
+- `pointnet/model.py`
+  - `PointNetCls`：分类器类
+  - `PointNetDenseCls`：分割器类
+  - `PointNetFeat`：特征生成类
+  - `STN3D`：T-Net, Input Transformer, 生成 3x3 的转换矩阵
+  - `STNkd`：T-Net, Feature Transformer, 生成 64x64 的转换矩阵
+- `utils/show_cls.py`：分类结果可视化
+- `utils/show_seg.py`：分割结果可视化
+- `utils/train_classification.py`：分类器的训练
+- `utils/train_segmentation.py`：分割器的训练
 
-On ModelNet40:
+# 性能
 
-|  | Overall Acc | 
-| :---: | :---: | 
-| Original implementation | 89.2 | 
-| this implementation(w/o feature transform) | 86.4 | 
-| this implementation(w/ feature transform) | 87.0 | 
+## 分类器的性能
 
-On [A subset of shapenet](http://web.stanford.edu/~ericyi/project_page/part_annotation/index.html)
+数据集 ModelNet40:
 
-|  | Overall Acc | 
-| :---: | :---: | 
-| Original implementation | N/A | 
-| this implementation(w/o feature transform) | 98.1 | 
-| this implementation(w/ feature transform) | 97.7 | 
+|  | 所有精度 |
+| :---: | :---: |
+| 原始实现 | 89.2 |
+| 仓库实现(w/o 特征变换) | 86.4 |
+| 仓库实现(w/ 特征变换) | 87.0 |
 
-## Segmentation performance
+数据集 [shapenet的子集](http://web.stanford.edu/~ericyi/project_page/part_annotation/index.html)
 
-Segmentation on  [A subset of shapenet](http://web.stanford.edu/~ericyi/project_page/part_annotation/index.html).
+|  | 所有精度 |
+| :---: | :---: |
+| 原始实现 | N/A |
+| 仓库实现(w/o 特征变换) | 98.1 |
+| 仓库实现(w/ 特征变换) | 97.7 |
+
+## 分割器的性能
+
+分割基于  [shapenet的子集](http://web.stanford.edu/~ericyi/project_page/part_annotation/index.html).
 
 | Class(mIOU) | Airplane | Bag| Cap|Car|Chair|Earphone|Guitar|Knife|Lamp|Laptop|Motorbike|Mug|Pistol|Rocket|Skateboard|Table
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | 
@@ -57,12 +75,12 @@ Segmentation on  [A subset of shapenet](http://web.stanford.edu/~ericyi/project_
 | this implementation(w/o feature transform) | 73.5 | 71.3 | 64.3 | 61.1 | 87.2 | 69.5 | 86.1|81.6| 77.4|92.7|41.3|86.5|78.2|41.2|61.0|81.1|
 | this implementation(w/ feature transform) |  |  |  |  | 87.6 |  | | | | | | | | | |81.0|
 
-Note that this implementation trains each class separately, so classes with fewer data will have slightly lower performance than reference implementation.
+注：这个实现单独训练每个类别，因此数据少的类别的性能比较参考实现要差。
 
-Sample segmentation result:
+样本分类结果:
 ![seg](https://raw.githubusercontent.com/fxia22/pointnet.pytorch/master/misc/show3d.png?token=AE638Oy51TL2HDCaeCF273X_-Bsy6-E2ks5Y_BUzwA%3D%3D)
 
-# Links
+# 链接
 
-- [Project Page](http://stanford.edu/~rqi/pointnet/)
-- [Tensorflow implementation](https://github.com/charlesq34/pointnet)
+- [PointNet 主页](http://stanford.edu/~rqi/pointnet/)
+- [Tensorflow 实现](https://github.com/charlesq34/pointnet)
