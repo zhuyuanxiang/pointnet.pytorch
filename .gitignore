@@ -10,3 +10,6 @@ seg/
 *.egg-info/
 .history/
 datasets/
+tmp/
+log/
+*.dll
