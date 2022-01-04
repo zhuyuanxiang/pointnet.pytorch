@@ -42,6 +42,10 @@
             },
             {
                 "name": "Python: 当前文件",
+                "args": [
+                    "one",
+                    "two"
+                ],
                 "type": "python",
                 "request": "launch",
                 "program": "${file}",
