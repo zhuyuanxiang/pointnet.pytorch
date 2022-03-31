@@ -1,6 +1,6 @@
 # PointNet.pytorch
 
-这个仓库 PointNet(https://arxiv.org/abs/1612.00593) 基于 pytorch 的实现，模型在 `pointnet/model.py` 中.
+这个仓库 [PointNet](https://arxiv.org/abs/1612.00593) 基于 pytorch 的实现，模型在 `pointnet/model.py` 中.
 
 基于 pytorch-1.0 进行了测试。
 
@@ -13,11 +13,30 @@ pip install -e .
 ```
 
 下载和编译可视化工具
+
 ```shell
 cd script
 bash build.sh #build C++ code for visualization
 bash download.sh #download dataset
 ```
+
+在Windows下编译可视化工具：
+
+[Python调用CPP文件的方法](https://blog.csdn.net/qq_38939905/article/details/121961058)
+
+使用 Visual Studio 2019，新建“C++，Windows，Library”中的动态链接库（DLL），在`pch.h`文件中声明外部调用的函数接口
+
+```c++
+#ifndef PCH_H
+#define PCH_H
+ 
+// 添加要在此处预编译的标头
+#include "framework.h"
+extern "C" _declspec(dllimport) void render_ball(int h, int w, unsigned char* show, int n, int* xyzs, float* c0, float* c1, float* c2, int r);
+#endif //PCH_H
+```
+
+将 `render_balls_so.cpp` 中的内容拷贝到 `pch.cpp`，按照平台情况选择解决方案是`x86`还是`x64`，生成解决方案得到DLL文件，将之拷贝到`dll = np.ctypeslib.load_library('./utils/render_balls_so.dll', '.')` 对应的目录下即可。
 
 训练模型
 

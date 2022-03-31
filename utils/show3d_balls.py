@@ -19,7 +19,7 @@ cv2.namedWindow('show3d')
 cv2.moveWindow('show3d', 0, 0)
 cv2.setMouseCallback('show3d', onmouse)
 
-dll = np.ctypeslib.load_library('render_balls_so', '.')
+dll = np.ctypeslib.load_library('./utils/render_balls_so.dll', '.')
 
 def showpoints(xyz,c_gt=None, c_pred = None, waittime=0, 
     showrot=False, magnifyBlue=0, freezerot=False, background=(0,0,0), 
@@ -161,4 +161,8 @@ def showpoints(xyz,c_gt=None, c_pred = None, waittime=0,
 
 if __name__ == '__main__':
     np.random.seed(100)
-    showpoints(np.random.randn(2500, 3))
+    # 函数使用说明
+    # n：放大；m：缩小；r：原始大小；s：保存图片
+    # t：目标对象的颜色；p：预测对象的颜色
+    # q：函数退出；Q：系统退出
+    showpoints(np.random.randn(2500, 3),np.ones((2500,3)),np.random.randn(2500,3))

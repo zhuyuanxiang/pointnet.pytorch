@@ -11,14 +11,14 @@ from pointnet.model import PointNetDenseCls
 import matplotlib.pyplot as plt
 
 
-#showpoints(np.random.randn(2500,3), c1 = np.random.uniform(0,1,size = (2500)))
+# showpoints(np.random.randn(2500,3), c1 = np.random.uniform(0,1,size = (2500)))
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--model', type=str, default='', help='model path')
+parser.add_argument('--model', type=str, default='./seg/seg_model_Chair_4.pth', help='model path')
 parser.add_argument('--idx', type=int, default=0, help='model index')
-parser.add_argument('--dataset', type=str, default='', help='dataset path')
-parser.add_argument('--class_choice', type=str, default='', help='class choice')
+parser.add_argument('--dataset', type=str, default='./datasets/shapenets/', help='dataset path')
+parser.add_argument('--class_choice', type=str, default='Airplane', help='class choice')
 
 opt = parser.parse_args()
 print(opt)

@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 import argparse
 import os
 import random
@@ -47,7 +48,7 @@ test_dataset = ShapeNetDataset(
     class_choice=[opt.class_choice],
     split='test',
     data_augmentation=False)
-testdataloader = torch.utils.data.DataLoader(
+test_dataloader = torch.utils.data.DataLoader(
     test_dataset,
     batch_size=opt.batchSize,
     shuffle=True,
@@ -61,7 +62,7 @@ try:
 except OSError:
     pass
 
-blue = lambda x: '\033[94m' + x + '\033[0m'
+blue = lambda x: '\033[94m' + x + '\033[0m' # blue() 将显示的字符蓝色化
 
 classifier = PointNetDenseCls(k=num_classes, feature_transform=opt.feature_transform)
 
@@ -78,6 +79,7 @@ for epoch in range(opt.nepoch):
     scheduler.step()
     for i, data in enumerate(dataloader, 0):
         points, target = data
+        print(points, target)
         points = points.transpose(2, 1)
         points, target = points.cuda(), target.cuda()
         optimizer.zero_grad()
@@ -96,7 +98,7 @@ for epoch in range(opt.nepoch):
         print('[%d: %d/%d] train loss: %f accuracy: %f' % (epoch, i, num_batch, loss.item(), correct.item()/float(opt.batchSize * 2500)))
 
         if i % 10 == 0:
-            j, data = next(enumerate(testdataloader, 0))
+            j, data = next(enumerate(test_dataloader, 0))
             points, target = data
             points = points.transpose(2, 1)
             points, target = points.cuda(), target.cuda()
@@ -111,9 +113,9 @@ for epoch in range(opt.nepoch):
 
     torch.save(classifier.state_dict(), '%s/seg_model_%s_%d.pth' % (opt.outf, opt.class_choice, epoch))
 
-## benchmark mIOU
+# benchmark mIOU
 shape_ious = []
-for i,data in tqdm(enumerate(testdataloader, 0)):
+for i,data in tqdm(enumerate(test_dataloader, 0)):
     points, target = data
     points = points.transpose(2, 1)
     points, target = points.cuda(), target.cuda()

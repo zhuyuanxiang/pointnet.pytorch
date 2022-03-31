@@ -1,0 +1,6 @@
+numpy~=1.21.4
+matplotlib~=3.4.3
+tqdm~=4.62.3
+plyfile~=0.7.4
+setuptools~=58.0.4
+torch~=1.8.0
